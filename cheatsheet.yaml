@@ -1,0 +1,90 @@
+# Port forwarding Kubernetes
+kubectl port-forward piperr-web-6f54547758-6vfhz 8080:8080
+
+# getting inside pod
+kubectl exec -i -t piperr-scheduler-76d7c86bd9-pvhtl --container piperr-scheduler -- /bin/bash
+
+# docker socket
+sudo chmod +777 /var/run/docker.sock
+
+# deleting port
+sudo lsof -i:{nameofport}
+sudo kill {pid}
+
+# copies the files fron the container to local file system
+docker cp <containerId>:/file/path/within/container /host/path/target
+
+# list of users gcloud
+gcloud auth list
+
+# Committing to GIT
+1. git clone 'url'
+1. git status 
+2. git add
+3. git commit -m "Messages"
+
+# To find and replace in all files 
+ctrl + shift + f
+ctrl + shift + r
+
+# task name should be in small_case letters
+
+# you can also give connections before running dags
+Create Pandas equivalent for queries in Trigger cutoff use case data ingestion
+
+Accessing VM through SSH authentication
+
+Going through the Service Quality DAG to understand the logic used in pandas try to convert it in to a single task using BigQueryOperator
+# Merging DAGS
+1. Check libraries
+2. Merge variables
+3. Change to  caps and check for all iknstances
+4. Check for DAG name and start date in defined DAGS
+5. Import tasks om next DAGS
+6. Update Variables
+7. Change Email content 
+8. Update Dependency
+
+# Git sync access only possible with kubernetes executor
+
+# to display 100 rows in csv file
+head -100 filename.csv > cat.csv
+
+# to generate SSH key
+ssh-keygen
+
+# docker run in specific port 
+docker run -p {target_port}:{container_port} {image_name}
+
+# Running a shell script
+1. Create the sh file
+2. copy and paste the commands with echo on front
+3. check the file through cat command
+4. run this ./filename.sh
+
+# Filtering DataFrame Pandas
+    # 1.
+    stocks_df = pd.DataFrame({
+        'Stock': ["Tesla","Moderna Inc","Facebook","Boeing"],
+        'Price': [835,112,267,209],
+        'Sector':["Technology","Health Technology","Technology","Aircraft"]})
+    # 2.
+    df1 = df[df['PartNumber']== j & (df['MfgDate']>=mfg_date) & 
+    (df['MfgDate']<tpi_bool_value)]
+
+    # 3. to filter through list
+    df = df[df['ModelID'].isin(['VDLS46BB', '1800222', 'VWTM42SE'])]
+
+    # 4. Date Conversion
+    df['MfgDate'] = pd.to_datetime(df['MfgDate']).dt.date
+    x = dt.datetime.strptime(mfg_date, '%Y-%m-%d').date()
+
+# Connecting to VM through SSH
+1. Create SSH RSA Asymmetric Public/Private Key
+ssh-keygen -t rsa -f ~/.ssh/[KEY_FILENAME] -C [USERNAME]
+2. Connect to Compute Engine Instance
+ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP
+3. open the specified file in code editor
+4. Google Cloud Composer
+
+

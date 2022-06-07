@@ -1,0 +1,47 @@
+#Usecases DAGs
+Relationship Tree
+Unplanned
+Repeat issues usecase
+Repeat issus vehicle count
+Trigger cutoff usecase
+Trigger cutoff PPAP
+Concession usecase
+customer voice usecase
+customer voice summary
+EO production month usecase
+EO receipt month usecase
+FF part production month usecase
+FF part receipt month usecase
+FF production month usecase
+FF and FF part production month usecase
+WC prod month usecase
+WC prod month usecase matured
+WC receipt month usecase
+RE WA Dmarts
+RE WA PiperrDB
+
+# Monthly once every start of month - check
+# shell script sleep 30 mins except 1st dag
+EO / FF / WC production month usecase matured 3 Dags
+Failure prediction ---- Monthly once 10 DAGs
+Failure Priority
+1. FAILURE_PREDICTION_USECASE_RESPECTIVE_DELETE_TABLE_DAG (sleep 10 mins)
+2. FAILURE_PREDICTION_MODEL_DAG_1 
+# ... to 8
+10. FAILURE_PREDICTION_USECASE_RESPECTIVE_DMARTS_data_ingestion_DAG
+
+
+# 8 DATA INGESTION DAGs / Table Names 
+1. DMS_JOBCARD_DATA_INGESTION_PIPELINE  / re_dms_table_v1
+2. DMS_SALES_DATA_INGESTION_PIPELINE / re_dms_sales_table_v1
+3. DMS_CALL_CENTER_DATA_INGESTION_PIPELINE / re_dms_call_center_usecase_table / re_dms_call_center_usecase_unique_prediction_table
+4. PPAP_DATA_INGESTION_PIPELINE / re_ppap_table
+5. RSA_DATA_INGESTION_PIPELINE / re_rsa_table
+6. SAP_CONCESSION_DATA_INGESTION_PIPELINE / concession_rework_table_v1
+7. SAP_VEHICLE_PRODUCTION_DATA_INGESTION_PIPELINE / sap_vehicle_production_table_v2
+8. SOCIAL_MEDIA_LOCOBUZZ_DATA_INGESTION_PIPELINE / re_social_media_table_v1 / re_social_media_unique_prediction_table_v1
+
+SELECT COUNT(*) FROM re-warranty-analytics-prod.re_wa_prod.re_dms_table_v1 
+WHERE piperrindate == CURRENT_DATE()
+UNION
+

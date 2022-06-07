@@ -1,0 +1,82 @@
+# OVERALL TASKS
+1. Superset deploy in VM through docker
+2. Helm airflow > 2.0 with kubernetes executor
+3. explore gsutils
+4. Transferring files from VM to Local
+5. SQL Window Function
+6. Volume perisistence in GKE
+7. sql query(sub query, removing duplicate values)
+8. Created DAG for part ignore 
+9. Explore on azure to bigquery data transfer
+10. Running shell script
+11. Understanding Query
+12. Running shell script in a container(
+  create sh. file
+  cat sh file 
+  and edit
+  ./sh file
+)
+13. watch shane bitbucket video
+14. SSH authentication
+15. check JOBQUAD data 
+16. service quality / repeat issues < 3 months or < 3000km from service
+
+# is_instance function in python
+Priority of DAGS in RE
+1. Service
+2. Sales
+3. Manufacture
+4. Call Centre
+
+#  Daily Task
+1. Qualdo -- check for data redundancy or through Bigquery after getting access
+
+# Issues
+1. Files are not getting deleted in pods (.csv's)
+
+# Refer in case of issues
+1. RSA and Socialmedia csv are not ingested daily by RE
+2. Debug using print statement 
+3. Decoding error in csv's try pd.read_csv(encoding=ISO-8259)
+
+# 30-05-2022
+1. Creating Shell Script
+2. Running DAGs through airflow backfill
+3. Git push and pull
+
+# 31-05-2022
+1. Created query for sales quality usecase DAG
+2. Created shell script for Usecases dag
+
+# 01-06-2022
+1. Accessing VM through SSH
+after login check mails of ran dags 
+check mails and failure 
+2. Create shell script for failure prediction
+3. Azure blob access 
+(Sales, Vehicle production) 
+check 
+  1. dup vehicle chassis number (through pandas) 
+  2. Create bq query that will create a table of all table names with respective delta counts
+  Pipeline/table name delta count
+no hup - is used to run DAGs in parallel 
+  3. ansible script for my login
+  
+# 02-06-2022
+1. Create end table which gives sales percentage from sales and vehicle manufacturing data
+2. External Table
+3. Trigger cut-off DAG
+
+# 03-06-2022
+1. same task
+
+# 06-06-2022
+1. Create a pandas equivalent code for a SQL Query
+2. Uploading files to GCS and converting it as table in BigQuery
+3. mfg date column convert to date format
+
+# 07-06-2022
+1. Create Pandas equivalent for queries in Trigger cutoff use case data ingestion
+2. Accessing VM through SSH authentication
+3. Going through the Service Quality DAG to understand the logic used in pandas try to convert it in to a single task using BigQueryOperator
+

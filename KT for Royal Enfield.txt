@@ -1,0 +1,75 @@
+KT for Royal Enfield
+Day 1:
+
+1. create simple flask app.
+2. run flask app on local
+3. dockerize flask app, build and run
+4. get familiar with docker commands like run ,build, stop, rm, rmi, ps, exec etc...
+5. next proceed to pull postgres image from dockerhub and run
+6. connect to postgres container and create user,create db, create table
+
+Day 2:
+
+1. try persisting data using docker-volumes eg: if u stop postgres container and restart container, the created table, user, etc will be lost, so to persist data we use volumes in docker and also try to mount flask folder and changes made in flask folder (on ur local) should reflect inside docker container.
+2. create a simple flask app and try to connect postgres from flask(explore on it).
+3. deploy flask app on minikube and explore on minikube (pods,deployments,services,secrets,configmaps etc)
+
+Day 3 & 4 [28-04-2022 & 29-04-2022]:
+
+1. install airflow in local or u can directly pull airflow docker image and run it on ur local, 2nd approach helps u get familiar with docker concepts like (mounting path, running multiple services(using docker-compose) , passing environmental variables etc)
+2. Have a look at airflow.cfg file
+3. explore the difference between sequential, local, celery executors in airflow
+4. write a simple dag to transfer data from one postgres table to another postgres table
+5. Get familiar with airflow ui as well as airflow commands
+
+Day 5:
+
+1. Extension for Day 3 & 4 tasks
+
+Day 6:
+
+1. use postgres as backend db for airflow (default sqllite)
+2. try loading csv file to postgres table using airflow (explore on operators, hook etc)
+3. try running tasks in parallel
+4. trigger a mail for success/failure
+
+Day 7:
+
+1. Extension for Day 6 tasks
+
+Day 8:
+
+1. Get familiar with airflow commands
+2. How to exchanges small data or messages between tasks?
+3. How to set and access variables across dags?
+4. trigger mail on Success/Failure
+5. Explore on BranchOperator
+6. create a simple pipeline with all the concepts you have learnt
+   example: load csv file data into postgres table, once data is available in postgres table,
+   fetch data do some aggegrations using pandas and ingest into another table,
+   once all tasks are executed successfully trigger an email, later try scheduling the dag to run everyday @ 9 am ist
+
+Day 9:
+
+1. Complete day 8 task
+2. Configure dags folder to git
+3. Explore on configuring logs to gcs storage
+4. Explore on pandas
+
+Day 10:
+
+1. insert data into table
+2. fetch data from table and do some aggregations and insert into other tables and trigger email on success
+3. Explore on custom hooks, operators
+4. Explore on Pandas, Sql Window functions
+
+Day 11:
+
+1. Configure dags folder to git repo
+2. Explore on ansible [build run flask app (docker image) using ansible]
+
+
+
+sales - 2088730
+prod - 2222808
+join 
