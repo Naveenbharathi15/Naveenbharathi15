@@ -81,10 +81,30 @@ docker run -p {target_port}:{container_port} {image_name}
 
 # Connecting to VM through SSH
 1. Create SSH RSA Asymmetric Public/Private Key
-ssh-keygen -t rsa -f ~/.ssh/[KEY_FILENAME] -C [USERNAME]
+---- ssh-keygen -t rsa -f ~/.ssh/[KEY_FILENAME] -C [USERNAME]
 2. Connect to Compute Engine Instance
-ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP
+---- ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP
 3. open the specified file in code editor
-4. Google Cloud Composer
 
-
+# imports airflow 1.10.10
+import time
+import os
+import re
+from datetime import date, datetime, timedelta
+import pandas as pd
+from airflow import DAG
+from airflow.contrib.hooks.wasb_hook import WasbHook
+from airflow.contrib.operators.file_to_gcs import FileToGoogleCloudStorageOperator
+from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
+from airflow.contrib.operators import gcs_to_bq
+from airflow.operators.python_operator import PythonOperator
+from airflow.operators.email_operator import EmailOperator
+from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
+from airflow.utils.dates import days_ago
+import smtplib
+import mimetypes
+import email
+import email.mime.application
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication

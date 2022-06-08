@@ -1,14 +1,14 @@
-#Usecases DAGs
-Relationship Tree
-Unplanned
-Repeat issues usecase
-Repeat issus vehicle count
-Trigger cutoff usecase
-Trigger cutoff PPAP
-Concession usecase
-customer voice usecase
-customer voice summary
-EO production month usecase
+#Usecases DAGs   -     Dependency
+1. Relationship Tree   - DMS JC
+2. Unplanned  - JC
+3. Repeat issues usecase  - JC
+Repeat issus vehicle count  - JC
+4. Trigger cutoff usecase  - JC , azure manual data(PLM_SB data)
+Trigger cutoff PPAP   - JC, PPAP
+5. Concession usecase  - JC, SAPConcession
+6. customer voice usecase  - JC, DMS_CALL_CENTRE, RSA, Social media
+customer voice summary   - JC, DMS_CALL_CENTRE, RSA, Social media 
+7. EO production month usecase - JC, SALES, MANUFACTURING DATA (for the rest  of usecases)
 EO receipt month usecase
 FF part production month usecase
 FF part receipt month usecase
@@ -17,8 +17,9 @@ FF and FF part production month usecase
 WC prod month usecase
 WC prod month usecase matured
 WC receipt month usecase
-RE WA Dmarts
-RE WA PiperrDB
+8. FAILURE_PREDICTION
+
+
 
 # Monthly once every start of month - check
 # shell script sleep 30 mins except 1st dag
@@ -40,6 +41,26 @@ Failure Priority
 6. SAP_CONCESSION_DATA_INGESTION_PIPELINE / concession_rework_table_v1
 7. SAP_VEHICLE_PRODUCTION_DATA_INGESTION_PIPELINE / sap_vehicle_production_table_v2
 8. SOCIAL_MEDIA_LOCOBUZZ_DATA_INGESTION_PIPELINE / re_social_media_table_v1 / re_social_media_unique_prediction_table_v1
+
+# USECASES TABLE
+1. RELATIONSHIP_TREE_USECASE_data_ingestion / relation_table = "re_relationshiptree_usecase_table_v1"
+2. UNPLANNED_VISITS_USECASE_data_ingestion / unplanned_table1 = "re_unplanned_visits_usecase_table_v1"
+unplanned_table2 = "re_unplanned_visits_percentage_usecase_table_v1"
+3. REPEAT_ISSUES_USECASE_data_ingestion / repeat_table1 = "re_service_quality_usecase_table_v1"
+repeat_table2 = "re_service_quality_percentage_usecase_table_v1"
+4. REPEAT_ISSUES_VEHICLE_COUNT_USECASE_data_ingestion / repeat_vehcount_table = "re_service_quality_vehicle_count_usecase_table"
+5. TRIGGER_CUTOFF_USECASE_data_ingestion / trigger_table = "trigger_cutoff_plm_usecase_table_v1"
+6. TRIGGER_CUTOFF_PPAP_USECASE_DATA_INGESTION / trigger_ppap = "re_trigger_cutoff_ppap_usecase_table"
+7. concession_usecase_data_ingestion / concession_table = "re_concession_rework_usecase_table_v1"
+8. CUSTOMER_VOICE_USECASE_CALL_CENTER_JC_PART_LABOUR_data_ingestion / cus_voice_table = "dms_call_center_usecase_chassis_part_labor_table_v1"
+9. customer_voice_summary_dag / cus_voice_sum_table = "re_customer_voice_summary_table"
+10. EO_PRODUCTION_MONTH_USECASE_data_ingestion / eo_prod_month_table = "re_engine_opening_production_month_wise_table_v2"
+11. EO_RECEIPT_MONTH_USECASE_data_ingestion / eo_receipt_table = "re_engine_opening_receipt_month_wise_v2"
+12. FF_PART_PRODUCTION_MONTH_USECASE_data_ingestion / ff_part_prod_table = "re_ff_production_month_wise_part_trend_table_v2"
+13. FF_PART_RECEIPT_MONTH_USECASE_data_ingestion / ff_receipt_table = "re_ff_receipt_month_wise_part_trend_table_v1"
+14. FF_PRODUCTION_MONTH_USECASE_data_ingestion / ff_prod_month_table = "re_ff_production_month_wise_table_v2"
+15. WC_PROD_MONTH_USECASE_METRIC / wc_prod_month_table = "re_wc_production_month_wise_table_v2"
+16. WC_RECEIPT_MONTH_USECASE_METRIC / wc_receipt_month_table = "re_wc_receipt_month_wise_v2"
 
 SELECT COUNT(*) FROM re-warranty-analytics-prod.re_wa_prod.re_dms_table_v1 
 WHERE piperrindate == CURRENT_DATE()

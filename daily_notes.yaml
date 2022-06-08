@@ -79,4 +79,19 @@ no hup - is used to run DAGs in parallel
 1. Create Pandas equivalent for queries in Trigger cutoff use case data ingestion
 2. Accessing VM through SSH authentication
 3. Going through the Service Quality DAG to understand the logic used in pandas try to convert it in to a single task using BigQueryOperator
+4. Google Cloud Composer
+window functions, pandas, rank, denserank
+
+# 08-06-2022
+1. Check whether all the pipelines ran successfully or else report the issue
+2. Be Alert Take Initiative
+3. Union Query for all tables (pipelines, usecases) -- refer Union all tables dags in tasks folder
+4. Sales, Vehicle Manufacturing (finding duplicates in pandas) 
+5. 
+
+
+
+Convert pandas to SQL Query through BigQuery operator in DAG 
+
+Optimize the dag by altering the task flow through branch operator
 
