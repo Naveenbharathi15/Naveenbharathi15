@@ -177,8 +177,8 @@ def transformation():
         os.remove(obj.LOCAL_FILE)
 
         # newly added naveen
-        obj.count = df.shape[0]
-        obj.dist_count = df['VehicleChassisNumber'].nunique()
+        global obj.count = df.shape[0]
+        global obj.dist_count = df['VehicleChassisNumber'].nunique()
         if obj.count != obj.dist_count:
             df[df['VehicleChassisNumber'].duplicated()]['VehicleChassisNumber'].to_csv('dup_chassis_num.csv', index=False)
         # ended naveen

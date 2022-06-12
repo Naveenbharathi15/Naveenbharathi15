@@ -86,12 +86,32 @@ window functions, pandas, rank, denserank
 1. Check whether all the pipelines ran successfully or else report the issue
 2. Be Alert Take Initiative
 3. Union Query for all tables (pipelines, usecases) -- refer Union all tables dags in tasks folder
-4. Sales, Vehicle Manufacturing (finding duplicates in pandas) 
-5. 
+4. Sales, Vehicle Manufacturing (finding duplicates in pandas)  
+
+# 09-06-2022
+1. Convert pandas to SQL Query through BigQuery operator in DAG 
+2. Optimize the dag by altering the task flow through branch operator
+
+# QUERY Repeat issues
+select * ,JobCard, DATE_DIFF(CreatedOn, creat_2, DAY) as Days_Diff, Kilometers - Km_2 as Km_Diff from 
+(select VehicleChassisNumber, PartNumber, CreatedOn, row_num,JobCard, MAX(CreatedOn) over(partition by VehicleChassisNumber, PartNumber) as max_row,lag(JobCard) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as prev_job_card, lag(CreatedOn) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as creat_2,Kilometers, 
+lag(Kilometers) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as Km_2 from(
+select *, row_number() over(partition by VehicleChassisNumber, PartNumber 
+order by 'CreatedOn', 'Kilometers') as  row_num
+from `second-pursuit-350605.test1.dms_repeat` 
+where VehicleChassisNumber in(
+SELECT VehicleChassisNumber  FROM `second-pursuit-350605.test1.dms_repeat` 
+GROUP BY VehicleChassisNumber, PartNumber 
+having count(*)>1) and PartNumber in 
+(
+SELECT PartNumber  FROM `second-pursuit-350605.test1.dms_repeat` 
+GROUP BY VehicleChassisNumber, PartNumber having count(*)>1 )
+)) where CreatedOn = max_row and row_num > 1
+and DATE_DIFF(CreatedOn, creat_2, DAY) < 91 and  Kilometers - Km_2 < 3000
+
+# Check file updation
+# Part number xlx lastmodified check
 
 
 
-Convert pandas to SQL Query through BigQuery operator in DAG 
-
-Optimize the dag by altering the task flow through branch operator
-
+uselegacy = false

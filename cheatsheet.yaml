@@ -19,15 +19,17 @@ gcloud auth list
 
 # Committing to GIT
 1. git clone 'url'
-1. git status 
-2. git add
-3. git commit -m "Messages"
+2. git branch 
+3. git diff
+4. git status 
+5. git add
+6. git commit -m "Messages"
+7. git push
 
 # To find and replace in all files 
 ctrl + shift + f
 ctrl + shift + r
 
-# task name should be in small_case letters
 
 # you can also give connections before running dags
 Create Pandas equivalent for queries in Trigger cutoff use case data ingestion
@@ -95,6 +97,7 @@ import pandas as pd
 from airflow import DAG
 from airflow.contrib.hooks.wasb_hook import WasbHook
 from airflow.contrib.operators.file_to_gcs import FileToGoogleCloudStorageOperator
+from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
 from airflow.contrib.operators import gcs_to_bq
 from airflow.operators.python_operator import PythonOperator
@@ -108,3 +111,18 @@ import email.mime.application
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
+
+# Connection GCP / blob
+part_list_csv = f'part.csv'
+storage_client = storage.Client()
+bucket = storage_client.bucket(GCS_BUCKET)
+print(storage.Blob(bucket=bucket, name=sales_csv).exists(storage_client))
+print(storage.Blob(bucket=bucket, name=part_list_csv).exists(storage_client))
+blob1 = bucket.blob(sales_csv)
+blob1.download_to_filename("sales.csv")
+
+# Airflow 
+# Backfill Command 
+airflow backfill FAILURE_PREDICTION_MODEL_DAG_1 -m -s 2022-02-07 -e 2022-06-01"
+# Trigger Command 
+airflow trigger_dag DMS_SALES_DATA_INGESTION_PIPELINE
