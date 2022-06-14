@@ -109,9 +109,20 @@ GROUP BY VehicleChassisNumber, PartNumber having count(*)>1 )
 )) where CreatedOn = max_row and row_num > 1
 and DATE_DIFF(CreatedOn, creat_2, DAY) < 91 and  Kilometers - Km_2 < 3000
 
+
+# QUERY Matured/Not Matured
+CREATE TABLE `second-pursuit-350605.test1.Matured_Data` AS
+SELECT *, CASE when SalesPercentage > 90 then 'Matured'  
+when SalesPercentage < 90 THEN 'Not Matured' END AS M_NM FROM (SELECT coalesce(ProdYear, SalesYear) AS Year, coalesce(ProdMonth, SalesMonth) AS Month, ProdCount, SalesCount,
+(SalesCount/ProdCount)*100 AS SalesPercentage, FROM (SELECT ProdYear,ProdMonth, 
+COUNT(*) AS ProdCount FROM `second-pursuit-350605.test1.mat-prod-dist1` 
+GROUP BY ProdYear, ProdMonth) Production 
+FULL OUTER JOIN (SELECT SalesYear, SalesMonth, COUNT(*) AS SalesCount FROM `second-pursuit-350605.test1.mat-sales-dist1` 
+GROUP BY SalesYear, SalesMonth) Sales
+ON Production.ProdYear=Sales.SalesYear AND Production.ProdMonth=Sales.SalesMonth)
+ORDER BY Year, Month
+
+
 # Check file updation
 # Part number xlx lastmodified check
-
-
-
-uselegacy = false
+# Ask rakesh to explain about PPAP and what is it

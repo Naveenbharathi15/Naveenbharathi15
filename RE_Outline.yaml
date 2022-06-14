@@ -1,15 +1,19 @@
 # JobCard Data Ingestion
 All details about service
+raw data file is downloaded from azure 
+It is transformed and uploaded to GCS and then the daily data is 
+appended to BQ table
 
 # Sales Data Ingestion
-All details anpout sales
-
+All details about sales
+raw data file is downloaded from azure 
+It is transformed and uploaded to GCS and then the daily data is 
+appended to BQ table
 
 # Vehicle Manufacturing 
 All details about production
 
 # RSA Data Ingestion
-
 
 # Social Media
 

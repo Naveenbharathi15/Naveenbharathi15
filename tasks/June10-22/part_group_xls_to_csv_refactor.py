@@ -12,15 +12,7 @@ from airflow.contrib.hooks.wasb_hook import WasbHook
 AZURE_CONTAINER = "175-warranty-analytics"
 AZURE_BLOB = f'poc-data/MANUAL-DATA/pm.xls'
 SOURCE_FILE = "pm.xls"
-DESTINATION_FILE= "part_group_test.csv"
-
-GCS_FILE_PATH = f'poc-data/MANUAL-DATA/{DESTINATION_FILE}'
-GCS_BUCKET = 're-prod-data-env'
-
-GCP_CONN_ID = "google_cloud_default"
-GCP_PROJECT = "re-warranty-analytics-prod"
-BQ_DATASET = "re_wa_prod"
-BQ_TABLE = "re_part_group_table"
+DESTINATION_FILE= "part_group.csv"
 
 
 def trans_xlx_csv():
@@ -70,14 +62,20 @@ def trans_xlx_csv():
     twins_df = df.copy()
     all_df = pd.concat([nc_df, twins_df, meteor_df, uce_df, him_df], ignore_index=True)
     all_df.to_csv(DESTINATION_FILE, header=True, index=False)
+    # CHECK WITH RAKESH FOR BLOB
+    az_hook.load_file(DESTINATION_FILE, container_name=AZURE_CONTAINER, blob_name=AZURE_BLOB)
     print(all_df.shape)
+
+
+def delete_local_files():
+    os.remove(DESTINATION_FILE)
 
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     'start_date': datetime(2022, 6, 13),
-    'email': ['rakeshaswath@saturam.com', 'naveen@saturam.com'],
+    'email': ['rakeshaswath@saturam.com','naveen@saturam.com'],
     'email_on_failure': True,
     'email_on_retry': False,
     'retries': 1,
@@ -89,7 +87,7 @@ dag = DAG(
     default_args=default_args,
     description='Updating xls to csv with updated columns to our requirement',
     # schedule_interval=timedelta(days=1),
-    schedule_interval="0 2 * * *"
+    schedule_interval="0 0 * * *"
 )
 
 conversion_task = PythonOperator(
@@ -98,43 +96,19 @@ conversion_task = PythonOperator(
     dag=dag
 )
 
-local_gcs = LocalFilesystemToGCSOperator(
-    task_id="local_to_gcs",
-    src=DESTINATION_FILE,
-    dst=GCS_FILE_PATH,
-    bucket=GCS_BUCKET,
-    # mime_type='text/csv',
-    google_cloud_storage_conn_id=GCP_CONN_ID,
+delete = PythonOperator(
+    task_id='delete_local_file',
+    python_callable=delete_local_files,
     dag=dag
 )
 
-gcs_bq = GoogleCloudStorageToBigQueryOperator(
-    task_id='gcs_to_bigquery',
-    bucket=GCS_BUCKET,
-    source_objects=[GCS_FILE_PATH],
-    schema_fields=[
-        {"name": "PartNumber", "type": "STRING", "mode": "NULLABLE"},
-        {"name": "PartName", "type": "STRING", "mode": "NULLABLE"},
-        {"name": "PartGroup", "type": "FLOAT", "mode": "NULLABLE"},
-        {"name": "PartVariant", "type": "STRING", "mode": "NULLABLE"},
-        {"name": "PartCategory", "type": "STRING", "mode": "NULLABLE"},
-        {"name": "ModelType", "type": "STRING", "mode": "NULLABLE"},
-    ],
-    destination_project_dataset_table=f'{GCP_PROJECT}.{BQ_DATASET}.{BQ_TABLE}',
-    write_disposition='WRITE_TRUNCATE',
-    skip_leading_rows=1,
-    allow_quoted_newlines=True,
-    google_cloud_storage_conn_id=GCP_CONN_ID,
-    bigquery_conn_id=GCP_CONN_ID,
-    dag=dag
-)
 
 success_update_email = EmailOperator(
-        task_id='part_file_update_mail',
+        task_id='success_mail',
         to=["rakeshaswath@saturam.com", "naveen@saturam.com"],
         subject='Part file update',
         html_content="""<h3>Part group file updated successfully</h3> """,
         dag=dag
 )
 
-conversion_task >> local_gcs >> gcs_bq >> success_update_email
+conversion_task >> delete >> success_update_email

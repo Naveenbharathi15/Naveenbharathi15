@@ -2,18 +2,39 @@ from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.email_operator import EmailOperator
 from airflow.operators.python_operator import BranchPythonOperator
+from airflow.operators.python_operator import PythonOperator
 import pandas as pd
+from airflow.contrib.hooks import gcs_hook
+
+
+def download_gcs():
+    hook_gcs = gcs_hook.GoogleCloudStorageHook(google_cloud_storage_conn_id=GCP_CONN_ID)
+    hook_gcs.download(bucket=GCS_BUCKET, object=SOURCE_FILE, filename="dms_jc.csv")
+
+
+def check_data():
+    df1 = pd.read_csv('/usr/local/airflow/dags/dms_jc.csv')
+    df1 = df1.dropna(subset=['PartNumber'])
+    df1 = df1[df1["PartGroup"].isnull()]
+    checker = df1["PartGroup"].isnull().count() 
+    if checker == 0:
+        return ["no_missing_parts_mail"]
+    else:
+        df1 = df1.drop_duplicates(subset=['PartNumber', 'ModelType'], keep='first')
+        cols = ['PartNumber', 'ModelType']
+        df1.to_csv('missing_part_nos.csv', columns=cols)
+        return ["missing_parts_csv_mail"]
+
 
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2022, 6, 8),
+    'start_date': datetime(2022, 6, 13),
     'email': ['rakeshaswath@saturam.com', 'naveen@saturam.com'],
     'email_on_failure': True,
     'email_on_retry': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
-
+    'retry_delay': timedelta(minutes=5)
 }
 
 dag = DAG(
@@ -24,28 +45,17 @@ dag = DAG(
     schedule_interval="45 1 * * *",
 )
 
-# GCP_CONN_ID = "google_cloud_default"
-# GCP_PROJECT = "re-warranty-analytics-prod"
-# GCS_BUCKET = 'naveentest'
+today = datetime.today()
+GCP_CONN_ID = "google_cloud_default"
+GCP_PROJECT = "re-warranty-analytics-prod"
+GCS_BUCKET = 're-prod-data-env'
+SOURCE_FILE = f'poc-data/DMS/Delta-Data/dms-{today}.csv'
 
-
-def check_data():
-    df1 = pd.read_csv('/usr/local/airflow/dags/JC_transformed.csv')
-    # blob2 = bucket.blob(sales_csv)
-    # blob2.download_to_filename("part_list.csv")
-    df2 = pd.read_csv('/usr/local/airflow/dags/pg_all_models_latest.csv')
-    df1 = df1.dropna(subset=['PartNumber'])
-    df3 = df1.merge(df2, how='left', left_on=['PartNumber', 'ModelType'], right_on=['Part No', 'ModelType'])
-    df3 = df3[df3["Part No"].isnull()]
-    checker = df3["Part No"].isnull().count()
-    if checker == 0:
-        return ["no_missing_parts_mail"]
-    else:
-        df3 = df3.drop_duplicates(subset=['PartNumber', 'ModelType'], keep='first')
-        cols = ['PartNumber', 'ModelType']
-        df3.to_csv('missing_part_nos.csv', columns=cols)
-        return ["missing_parts_csv_mail"]
-
+gcs_to_local = PythonOperator(
+    task_id='gcs_to_local',
+    python_callable=download_gcs,
+    dag=dag
+)
 
 testing_data = BranchPythonOperator(
     task_id='data_check',
@@ -70,5 +80,6 @@ missing_parts_csv_mail = EmailOperator(
         files=['missing_part_nos.csv'],
         dag=dag
 )
-testing_data >> no_missing_parts_mail
-testing_data >> missing_parts_csv_mail
+
+gcs_to_local >> testing_data >> no_missing_parts_mail
+gcs_to_local >> testing_data >> missing_parts_csv_mail

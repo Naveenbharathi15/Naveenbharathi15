@@ -126,3 +126,88 @@ blob1.download_to_filename("sales.csv")
 airflow backfill FAILURE_PREDICTION_MODEL_DAG_1 -m -s 2022-02-07 -e 2022-06-01"
 # Trigger Command 
 airflow trigger_dag DMS_SALES_DATA_INGESTION_PIPELINE
+
+
+uselegacy = false
+
+# Check for a file in azure blob
+LOCAL_FILE = f'dms-{today}.csv'
+AZURE_BLOB = f'poc-data/DMS/Delta-Data/dms-{today}.csv'
+AZURE_CONTAINER = "175-warranty-analytics"
+def check_blob():
+    az_hook = WasbHook(wasb_conn_id='wasb_default')
+    return az_hook.check_for_blob(container_name=AZURE_CONTAINER, blob_name=AZURE_BLOB)
+
+# getting file from a azure blob
+LOCAL_FILE = f'dms-{today}.csv'
+AZURE_BLOB = f'poc-data/DMS/Delta-Data/dms-{today}.csv'
+AZURE_CONTAINER = "175-warranty-analytics"
+
+az_hook = WasbHook(wasb_conn_id='wasb_default')
+az_hook.get_file(LOCAL_FILE, container_name=AZURE_CONTAINER, blob_name=AZURE_BLOB)
+
+# Deleting a file in local
+def delete_local_files():
+  os.remove(LOCAL_FILE)
+
+# For doubt in pandas refer transformation method from (dms JC pipeline)
+
+# Operators in Airflow
+
+gcs = LocalFilesystemToGCSOperator(
+    task_id="local_to_gcs",
+    src=LOCAL_FILE,
+    dst=GCS_FILE_PATH,
+    bucket=GCS_BUCKET,
+    mime_type='text/csv',
+    google_cloud_storage_conn_id=GCP_CONN_ID,
+    dag=dag
+)
+
+delete = PythonOperator(
+    task_id='delete_local_file',
+    python_callable=delete_local_files,
+    dag=dag
+)
+
+gcs_bq = gcs_to_bq.GoogleCloudStorageToBigQueryOperator(
+    task_id='gcs_to_bigquery',
+    bucket=GCS_BUCKET,
+    source_objects=[GCS_FILE_PATH],
+    schema_fields=[
+        {"name": "JobCard", "type": "STRING", "mode": "NULLABLE"},
+        {"name": "PartNumber", "type": "STRING", "mode": "NULLABLE"},
+        {"name": "LineAmount", "type": "FLOAT", "mode": "NULLABLE"},
+        {"name": "PartDescription", "type": "STRING", "mode": "NULLABLE"},
+        {"name": "ItemType", "type": "STRING", "mode": "NULLABLE"}, 
+    ],
+    destination_project_dataset_table=f'{GCP_PROJECT}.{BQ_DATASET}.{BQ_TABLE}',
+    write_disposition='WRITE_APPEND',
+    skip_leading_rows=1,
+    allow_quoted_newlines=True,
+    google_cloud_storage_conn_id=GCP_CONN_ID,
+    bigquery_conn_id=GCP_CONN_ID,
+    dag=dag
+)
+
+email_success = EmailOperator(
+        task_id='send_email_on_success',
+        to=["rakeshaswath@saturam.com","naveen@saturam.com"],
+        subject='DMS JobCard data ingestion pipeline Success',
+        html_content=""" <h3>DMS JobCard data ingestion pipeline ingested data successfully</h3> """,
+        dag=dag
+)
+
+relation_task = BigQueryOperator(
+    task_id='relation_tree',
+    use_legacy_sql=False,
+    sql=sql,
+    destination_dataset_table=f'{GCP_PROJECT}:{BQ_DATASET}.{BQ_DESTINATION_TABLE}',
+    write_disposition='WRITE_TRUNCATE',
+    bigquery_conn_id=GCP_CONN_ID,
+    dag=dag,
+)
+
+# mime_type='text/csv', ASK THIS WITH RAKESH
+# merge two tasks to one local_gcs2 gcs_bq2 ask with rakesh later
+# 

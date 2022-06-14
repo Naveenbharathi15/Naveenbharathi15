@@ -1,0 +1,4 @@
+t1.VehicleChassisNumber,t1.JobCard,t1.CreatedOn,t1.PartNumber,t1.PartDescription,t1.JobSubType,t1.BillType,t1.PrimaryPartNumber,t1.
+PartGroup,t1.PrimaryPartNew,t1.PrimaryPartGroup,t1.Zone,t1.Region,t1.State,t1.DealerCode,t1.DealerName,t1.City,ModelType,t1.Model,t1.Kilometers,t1.KmsGroup,t1.Plant,t1.MfgMonth,t1.
+MfgYear,t1.CreatedOnYear,t1.CreatedOnMonth, t1.PiperrInDate
+
