@@ -62,7 +62,5 @@ repeat_table2 = "re_service_quality_percentage_usecase_table_v1"
 15. WC_PROD_MONTH_USECASE_METRIC / wc_prod_month_table = "re_wc_production_month_wise_table_v2"
 16. WC_RECEIPT_MONTH_USECASE_METRIC / wc_receipt_month_table = "re_wc_receipt_month_wise_v2"
 
-SELECT COUNT(*) FROM re-warranty-analytics-prod.re_wa_prod.re_dms_table_v1 
-WHERE piperrindate == CURRENT_DATE()
-UNION
+
 

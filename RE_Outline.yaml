@@ -75,3 +75,28 @@ usecase and percentage
   2. veh count
     df is taken from sq usecase table as source and group by with partno and vcn and greater than 1 is taken and 
 
+
+# TRIGGER CUT_OFF USECASE
+Analysing the parts after redefining it through vehicle chassis number dms jobcard data
+
+# TRIGGER CUT_OFF PPAP
+
+# CONCESSION USECASE
+
+# UNPLANNED VISITS
+
+# RELATIONSHIP USECASE
+Analysing the relationship between consequential and primary parts and their repair frequency
+
+# CUSTOMER VOICE CALL USECASE
+issues came through customer service calls
+
+# CONCESSION USECASE
+analysing concession gave by RE 
+
+# Fault frequency and failure prediction
+
+
+# failure prediction
+
+
