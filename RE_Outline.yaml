@@ -15,16 +15,63 @@ All details about production
 
 # RSA Data Ingestion
 
-# Social Media
 
+# sap concession
+
+
+
+# sap vehicle production
+
+
+
+# Social Media
+2 destination tables for seperating comments
+in social media based on technical terms
 
 # Service Quality Data Ingestion
-
+repeat service or problem 
 
 # Trigger_cutoff Data Ingestion
+ppap
+usecase
 
 
 # Customer Care Data Ingestion
 
 
+
+# Unplanned visits
+usecase and percentage
+
+# Relationship Tree
+            SELECT t1.VehicleChassisNumber,t1.JobCard,t1.CreatedOn,t1.PartNumber,t1.PartDescription,t1.JobSubType,t1.BillType,t1.PrimaryPartNumber,t1.
+            PartGroup,t1.PrimaryPartNew,t1.PrimaryPartGroup,t1.Zone,t1.Region,t1.State,t1.DealerCode,t1.DealerName,t1.City,ModelType,t1.Model,t1.Kilometers,t1.KmsGroup,t1.Plant,t1.MfgMonth,t1.
+            MfgYear,t1.CreatedOnYear,t1.CreatedOnMonth, t1.PiperrInDate
+            FROM
+            (
+                SELECT dms.VehicleChassisNumber,dms.JobCard,dms.CreatedOn,dms.PartNumber,dms.PartDescription,dms.JobSubType,dms.BillType,dms.PrimaryPartNumber,dms.
+                PartGroup,dms.PrimaryPartNew,dms.PrimaryPartGroup,dms.Zone,dms.Region,dms.State,dms.DealerCode,dms.DealerName,dms.City,ModelType,dms.Model,dms.Kilometers,dms.KmsGroup,dms.Plant,dms.MfgMonth,dms.
+                MfgYear,dms.CreatedOnYear,dms.CreatedOnMonth, dms.PiperrInDate FROM(SELECT VehicleChassisNumber, JobCard, CreatedOn, PartNumber, PartDescription, JobSubType, BillType, PrimaryPartNumber, 
+                PartGroup, PrimaryPartNew, PrimaryPartGroup, Zone, Region, State, DealerCode, DealerName, City,ModelType, Model, Kilometers, KmsGroup, Plant, MfgMonth, 
+                MfgYear, CreatedOnYear, CreatedOnMonth,CURRENT_DATE() as PiperrInDate
+                FROM `{GCP_PROJECT}.{BQ_DATASET}.{BQ_SOURCE_TABLE}`
+                WHERE ItemType like '%Part%' and PrimaryConsequential like '%Consequential%' and
+                ModelType not in ('NA') and Model not in ('U','NA','MACHISMO', '', 'TAURUS','ROYAL','DSW') and Plant not in ('NA')
+                and PrimaryPart is not null and length(JobCard) = 16 and
+                length(VehicleChassisNumber)=17 and PartNumber is not null and PartDescription is not null and Country like 'Domestic' and MfgYear !=1900
+                and PartAction is null) dms
+                LEFT JOIN `{GCP_PROJECT}.{BQ_DATASET}.{BQ_SOURCE_TABLE2}` pe
+                ON 
+                dms.PartNumber = pe.PartNo
+                WHERE pe.PartNo IS NULL
+            ) t1
+            LEFT JOIN `{GCP_PROJECT}.{BQ_DATASET}.{BQ_SOURCE_TABLE2}` t2
+            4ON 
+            t1.PrimaryPartNumber = t2.PartNo;
+
+
+# Service quality
+  1. usecase
+  2. veh count
+    df is taken from sq usecase table as source and group by with partno and vcn and greater than 1 is taken and 
 

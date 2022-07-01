@@ -94,7 +94,10 @@ window functions, pandas, rank, denserank
 
 # QUERY Repeat issues
 select * ,JobCard, DATE_DIFF(CreatedOn, creat_2, DAY) as Days_Diff, Kilometers - Km_2 as Km_Diff from 
-(select VehicleChassisNumber, PartNumber, CreatedOn, row_num,JobCard, MAX(CreatedOn) over(partition by VehicleChassisNumber, PartNumber) as max_row,lag(JobCard) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as prev_job_card, lag(CreatedOn) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as creat_2,Kilometers, 
+(select VehicleChassisNumber, PartNumber, CreatedOn, row_num,JobCard, MAX(CreatedOn) over(partition by
+ VehicleChassisNumber, PartNumber) as max_row,lag(JobCard) over( partition by VehicleChassisNumber, 
+ PartNumber order by CreatedOn) as prev_job_card, lag(CreatedOn) over( partition by VehicleChassisNumber, 
+ PartNumber order by CreatedOn) as creat_2,Kilometers, 
 lag(Kilometers) over( partition by VehicleChassisNumber, PartNumber order by CreatedOn) as Km_2 from(
 select *, row_number() over(partition by VehicleChassisNumber, PartNumber 
 order by 'CreatedOn', 'Kilometers') as  row_num
@@ -109,7 +112,6 @@ GROUP BY VehicleChassisNumber, PartNumber having count(*)>1 )
 )) where CreatedOn = max_row and row_num > 1
 and DATE_DIFF(CreatedOn, creat_2, DAY) < 91 and  Kilometers - Km_2 < 3000
 
-
 # QUERY Matured/Not Matured
 CREATE TABLE `second-pursuit-350605.test1.Matured_Data` AS
 SELECT *, CASE when SalesPercentage > 90 then 'Matured'  
@@ -122,7 +124,174 @@ GROUP BY SalesYear, SalesMonth) Sales
 ON Production.ProdYear=Sales.SalesYear AND Production.ProdMonth=Sales.SalesMonth)
 ORDER BY Year, Month
 
-
 # Check file updation
 # Part number xlx lastmodified check
 # Ask rakesh to explain about PPAP and what is it
+
+# Learnings
+forgot to add task id to branch operator
+SQL arrange for others to understand
+Start Date DAG
+custom variables 
+fetch metadata from BQ
+failed to change BQ table (historic table name while testing dms dag) so data appended twice
+test after 12 o clock
+mark task failed before running new time in airflow ui
+change dir to test in azure and gcs poc-data/DMS/Delta-Data/dms-{today}.csv to poc-data/test/dms-{today}.csv
+chnge table na,me to _test for all usecases and pipeline tables
+for usecases we donot need csv files to be uploaded in gcs
+
+# 16-06-2022
+# check for local to bq operator 
+# csv file from local to bq / load csv to bq 
+# dataframe to bq table
+explore on requests  /// least priority
+# https://marclamberti.com/blog/variables-with-apache-airflow/
+# create json file and allocate boolean values 
+# and delete local files
+
+
+
+# 17-06-2022
+git pull
+usecase variable 
+unplanned 
+sales quality
+
+
+
+DELTA TABLE
+jc - "re_dms_delta_table"
+call centre - "re_dms_call_center_delta_table"
+ppap - ""
+
+
+
+# Ask created on query to rakesh
+customer summary check condtion
+eo prod month sales delta table
+
+
+change piperindate to createdon in EO receipt
+
+eo and wc
+usecases check with variables
+end of the day deploy
+
+
+# to tell rakesh
+1. changed variable in concession
+2. eo and condition change
+3. have to check matured or not matured
+4. customer voice usecase source dms hist or dms delta
+
+
+# left out usecases
+1. ff anf ff production month usecase
+2. failure prediction
+3. wc ,matured month updation
+4. wa pipelines delta data summary
+
+v.get(key="dms_jc_file_status") == "true" and v.get(key="dms_sales_file_status") == "true"
+
+
+
+#  MATURED DF FAULT FRQUENCY
+    def matured_df():
+    -#     global m_df
+    -#
+    -#     today = date.today()
+    -#     JOBCARD_FILE_STATUS_BLOB = f'poc-data/DMS/Delta-Data/dms-{today}.csv'
+    -#     SALES_FILE_STATUS_BLOB = f'poc-data/DMS-SALES/Delta-Data/dms-sales-{today}.csv'
+    -#     storage_client = storage.Client()
+    -#     bucket = storage_client.bucket(GCS_BUCKET)
+    -#     JOBCARD_FILE_STATUS = storage.Blob(bucket=bucket, name=JOBCARD_FILE_STATUS_BLOB).exists(storage_client)
+    -#     SALES_FILE_STATUS = storage.Blob(bucket=bucket, name=SALES_FILE_STATUS_BLOB).exists(storage_client)
+    -#
+    -#     if JOBCARD_FILE_STATUS and SALES_FILE_STATUS:
+    -#         bq_hook = BigQueryHook(bigquery_conn_id=GCP_CONN_ID, delegate_to=None, use_legacy_sql=False)
+    -#         bq_client = bigquery.Client(project=bq_hook._get_field(GCP_PROJECT), credentials=bq_hook._get_credentials())
+    -#
+    -#         m_sql = f"""
+    -#                 SELECT MfgMonthYear, Maturity
+    -#                 FROM `{GCP_PROJECT}.{BQ_DATASET}.{BQ_MATURED_TABLE}`;
+    -#         """
+    -#         m_df = bq_client.query(m_sql).to_dataframe()
+
+
+    -# ff_matured = PythonOperator(
+    -#     task_id='ff_matured_task',
+    -#     python_callable=matured_df,
+    -#     dag=dag,
+    -# )
+
+
+# Unplanned Usecase to SQL Query Conversion
+
+SELECT VehicleChassisNumber,JobCard,PartNumber,PartDescription, ItemType,PartAction,PartGroup,PartVariant, PartCategory, PartDefectCode, JobSubType, BillType, CustomerComplaint,
+Zone,Region,State,DealerCode,DealerName,City,Kilometers, KmsGroup, 
+CreatedOn AS ServiceDate, Model, ModelType, ModelName, CAST(DateofSale AS DATE) AS SalesDate, DATETIME_DIFF(CreatedOn, DateofSale,DAY) as DaysDifference,
+Plant, MfgMonth, MfgYear,CreatedOnYear, CreatedOnMonth,  PiperrInDate,
+"ss" as ServiceSchedule, "va" as VehicleAge, FORMAT_DATE("%b-%Y", CreatedOn) as JCMonthNameYear, 
+FORMAT_DATE("%Y-%m", CreatedOn) as JCMonthYear, "unplanned_services" as BreakPoint, 
+CASE 
+WHEN Kilometers BETWEEN 0 AND 800  OR DaysDifference BETWEEN 0 AND 75 THEN "Before Service-1" 
+WHEN Kilometers BETWEEN 801 AND 10500 OR DaysDifference BETWEEN 76 AND 405 THEN "Between Service-1 & Service-2"
+WHEN Kilometers BETWEEN 10501 AND 20600 OR DaysDifference BETWEEN 406 AND 780 THEN "Between Service-2 & Service-3"
+WHEN Kilometers BETWEEN 20601 AND 30700 OR DaysDifference BETWEEN 781 AND 1145 THEN "Between Service-3 & Service-4"
+WHEN Kilometers > 30700 800 OR DaysDifference > 1145 THEN "After Service-4"
+END AS ServiceSchedule,
+CASE 
+WHEN DaysDifference BETWEEN 0 AND 90 THEN "(A) 0 - 3 Months" 
+WHEN DaysDifference BETWEEN 91 AND 365 THEN "(B) 3 - 12 Months"
+WHEN DaysDifference BETWEEN 366 AND 730 THEN "(C) 12 - 24 Months"
+WHEN DaysDifference BETWEEN 731 AND 1095 THEN "(D) 24 - 36 Months"
+WHEN DaysDifference > 1095 THEN "(E) 36 Months & Above"
+END AS VehicleAge, 
+ISNULL (DaysDifference, -1) AS DaysDifference,
+FROM `{GCP_PROJECT}.{BQ_DATASET}.{BQ_SOURCE_TABLE}` 
+WHERE length(VehicleChassisNumber)=17 and length(JobCard) = 16 and ModelType not like 'NA' and 
+Model not in ('U','NA','MACHISMO', '', 'TAURUS','ROYAL','DSW') and Plant not in ('NA') and PartAction is null and 
+ItemType like '%Part%' and PrimaryConsequential like '%Primary%' and PartNumber is not null and PartDescription is 
+not null and Country like 'Domestic' and MfgYear !=1900 and JobCard not in 
+(select distinct JobCard FROM `{GCP_PROJECT}.{BQ_DATASET}.{BQ_SOURCE_TABLE}` 
+where PartNumber in (SELECT DISTINCT LaborCode FROM "GSS TABLE NAME")
+
+Kilometers  DaysDifference  ModelName
+
+
+# Airflow 2.0 base image
+dags volume mount (dags and logs folder in gcs)
+azure to bq direct (have to check) operator
+
+
+# DOCKERFILE AND VOLUME MOUNTING
+https://www.cloudbees.com/blog/what-is-a-dockerfile
+https://www.cloudbees.com/blog/docker-basics-linking-and-volumes
+
+PPAP manual accredation not regular
+
+# piperr reports config file uri
+SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
+
+
+# ansible playbook
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    gcp_project: western-rider-354707
+    gcp_cluster_name: cluster-1
+    gcp_region: us-central1-c
+    gcp_service: naveen@western-rider-354707.iam.gserviceaccount.com
+    tag: prtest
+    ver: latest
+  tasks:
+#    - import_tasks: ./re-ansible-scripts/prod-login.yaml
+# import tasks are sub files
+
+
+etl
+
+

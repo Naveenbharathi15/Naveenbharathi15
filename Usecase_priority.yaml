@@ -1,13 +1,13 @@
-#Usecases DAGs   -     Dependency
-1. Relationship Tree   - DMS JC
-2. Unplanned  - JC
-3. Repeat issues usecase  - JC
-Repeat issus vehicle count  - JC
-4. Trigger cutoff usecase  - JC , azure manual data(PLM_SB data)
-Trigger cutoff PPAP   - JC, PPAP
-5. Concession usecase  - JC, SAPConcession
-6. customer voice usecase  - JC, DMS_CALL_CENTRE, RSA, Social media
-customer voice summary   - JC, DMS_CALL_CENTRE, RSA, Social media 
+#Usecases DAGs   -   Dependency
+1. Relationship Tree - DMS JC   re_relationshiptree_usecase_table_v1
+2. Unplanned - JC
+3. Repeat issues usecase - JC
+Repeat issus vehicle count - JC
+4. Trigger cutoff usecase - JC , azure manual data(PLM_SB data)
+Trigger cutoff PPAP - JC, PPAP
+5. Concession usecase - JC, SAPConcession
+6. customer voice usecase - JC, DMS_CALL_CENTRE, RSA, Social media
+customer voice summary - JC, DMS_CALL_CENTRE, RSA, Social media 
 7. EO production month usecase - JC, SALES, MANUFACTURING DATA (for the rest of usecases)
 EO receipt month usecase
 FF part production month usecase
@@ -19,7 +19,7 @@ WC prod month usecase matured
 WC receipt month usecase
 8. FAILURE_PREDICTION
 
-
+# SOCIAL MEDIA RSA SHOULD ME MANUALLY TRIGGERRED
 
 # Monthly once every start of month - check
 # shell script sleep 30 mins except 1st dag

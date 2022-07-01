@@ -19,6 +19,8 @@ gcloud auth list
 
 # Committing to GIT
 1. git clone 'url'
+# to switch branch 
+git switch 
 2. git branch 
 3. git diff
 4. git status 
@@ -34,7 +36,6 @@ ctrl + shift + r
 # you can also give connections before running dags
 Create Pandas equivalent for queries in Trigger cutoff use case data ingestion
 
-Accessing VM through SSH authentication
 
 Going through the Service Quality DAG to understand the logic used in pandas try to convert it in to a single task using BigQueryOperator
 # Merging DAGS
@@ -86,6 +87,7 @@ docker run -p {target_port}:{container_port} {image_name}
 ---- ssh-keygen -t rsa -f ~/.ssh/[KEY_FILENAME] -C [USERNAME]
 2. Connect to Compute Engine Instance
 ---- ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP
+ssh-i ~/.ssh/my_google_cloud_key root0002@34.68.215.72
 3. open the specified file in code editor
 
 # imports airflow 1.10.10
@@ -208,6 +210,65 @@ relation_task = BigQueryOperator(
     dag=dag,
 )
 
+bo = BranchPythonOperator(
+    task_id='choose_tasks',
+    python_callable=choose_tasks,
+    do_xcom_push=False,
+    dag=dag
+)
+
 # mime_type='text/csv', ASK THIS WITH RAKESH
-# merge two tasks to one local_gcs2 gcs_bq2 ask with rakesh later
-# 
+
+# converting from test to production dags
+1.change destination table file path
+2. DAG Date
+3. Table Names
+4. Send email RE(comment out)
+
+
+# bash operator shell script
+rm /usr/local/airflow/dags/*.csv || echo "hello"
+rm rm /usr/local/airflow/dags/*.xls || echo "hello
+
+# variable airflow json
+{
+"dms_jc_file_status": "false",
+"dms_sales_file_status": "false",
+"dms_call_centre_file_status": "false",
+"dms_rsa_status": "false",
+"ppap_file_status": "false",
+"rsa_file_status": "false",
+"social_media_file_status": "false",
+"sap_vehicle_prod_file_status": "false",
+"sap_concession_file_status" : "false"
+}
+
+
+# Deployment 
+
+
+docker exec -u airflow 741b11dfd3e9 pg_dump -Fc airflow > db.sql
+sudo -u postgres psql 
+
+
+# PSQL POSTGRES
+CREATE DATABASE naveensdb
+\c naveendb
+sudo -u postgres psql 
+
+
+
+psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
+psql -h 34.68.215.72 -p 5432 -U superset superset
+CREATE DATABASE superset;
+CREATE USER superset WITH PASSWORD 'superset';
+GRANT ALL PRIVILEGES ON DATABASE "superset" to superset;
+
+psql -h 34.68.215.72 -p 6000 -d postgres -U postgres -W
+
+psql -h 34.68.215.72 -U superset -p 5432 -d superset < /home/root0002/Downloads/superset_bckup.sql
+
+SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
+
+
+

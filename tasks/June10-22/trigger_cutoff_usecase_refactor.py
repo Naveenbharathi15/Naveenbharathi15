@@ -23,11 +23,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 
-user = 'royalenfield'
-password = os.environ["SMTP_PWD"]
-to = "zzrakeshaswath@royalenfield.com,subanand@royalenfield.com,jayaprakash@royalenfield.com,sureshe@royalenfield.com,jgokul@royalenfield.com"
-# to = "zzrakeshaswath@royalenfield.com"
-sender = 'noreply@royalenfield.com'
+# user = 'royalenfield'
+# password = os.environ["SMTP_PWD"]
+# to = "zzrakeshaswath@royalenfield.com,subanand@royalenfield.com,jayaprakash@royalenfield.com,sureshe@royalenfield.com,jgokul@royalenfield.com"
+# # to = "zzrakeshaswath@royalenfield.com"
+# sender = 'noreply@royalenfield.com'
 
 GCS_BUCKET = 're-prod-data-env'
 GCP_CONN_ID = "google_cloud_default"
