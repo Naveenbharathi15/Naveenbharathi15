@@ -8,3 +8,6 @@ Pandas(aggregate, merge, join, append, concat... etc)
 Regex
 while running DAGs always check for start date
 implementing variables in shell script
+
+
+scp -i Downloads/royalenfield.pem /home/user/Downloads/falsk_jira_app.zip ssh:/home/ubuntu/

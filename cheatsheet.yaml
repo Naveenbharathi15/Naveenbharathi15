@@ -3,14 +3,31 @@ kubectl port-forward piperr-web-6f54547758-6vfhz 8080:8080
 
 # getting inside pod
 kubectl exec -i -t piperr-scheduler-76d7c86bd9-pvhtl --container piperr-scheduler -- /bin/bash
+kubectl exec -i -t piperr-reports-5bb8b9dfbf-f46gr -- /bin/bash
 
 # Connecting to VM through SSH
 1. Create SSH RSA Asymmetric Public/Private Key
 ---- ssh-keygen -t rsa -f ~/.ssh/[KEY_FILENAME] -C [USERNAME]
 2. Connect to Compute Engine Instance
 ---- ssh -i PATH_TO_PRIVATE_KEY USERNAME@EXTERNAL_IP
-ssh-i ~/.ssh/my_google_cloud_key root0002@34.68.215.72
+ssh-i ~/h root0002@35.202.183.231
 3. open the specified file in code editor
+# gives read only permission 
+chmod 400 crayon-aws.pem 
+# to access vm
+ssh ubuntu@44.242.98.62    and then enter password
+# access vm and copy file from local to vm
+scp -i Downloads/crayon-aws.pem Downloads/re_jira.zip ubuntu@44.242.98.62:/home/ubuntu/RE_JIRA_CONNECTOR
+scp -i Downloads/royalenfield.pem /home/root0002/re_jira_connector/login/app.py ssh
+:/home/ubuntu/re_jira_connector/login
+# vm to local
+scp -i /home/root0002/Downloads/royalenfield.pem ubuntu@54.183.123.115:/home/ubuntu/re_jira_integration.zip /home/root0002/RE/
+# copy folder from local to vm
+scp -r /home/root0002/vm/dags root0002@35.223.203.218:/home/root0002/airflow/
+#  after creating vm you have to create firewall rule to expose the particular vp
+go to create filrewall rule
+# signin as root user
+sudo su - to go in as root user
 
 # docker socket
 sudo chmod +777 /var/run/docker.sock
@@ -28,16 +45,18 @@ docker cp <containerId>:/file/path/within/container /host/path/target
 # list of users gcloud
 gcloud auth list
 
-# Committing to GIT
-1. git clone 'url'
+#GIT
+git clone 'url'
 # to switch branch 
 git switch 
-2. git branch 
-3. git diff
-4. git status 
-5. git add
-6. git commit -m "Messages"
-7. git push
+git branch 
+git diff
+git status 
+git add
+git commit -m "Messages"
+git push
+# authenticating git 
+git push https://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@github.com/Naveenbharathi15/Naveenbharathi15.git
 
 # To find and replace in all files 
 ctrl + shift + f
@@ -75,10 +94,7 @@ head -100 filename.csv > cat.csv
     (df['MfgDate']<tpi_bool_value)]
 
     # 3. to filter through list
-    df = df[df['ModelID'].isin(['VDLS46BB', '1800222', 'VWTM42SE'])]
-
-    # 4. Date Conversion
-    df['MfgDate'] = pd.to_datetime(df['MfgDate']).dt.date
+    df = df[df['ModelID'].isin(['VDLS46BB', '18t26UCSGmQf4AU5EdMXJw]).dt.date
     x = dt.datetime.strptime(mfg_date, '%Y-%m-%d').date()
 
 # imports airflow 1.10.10
@@ -92,8 +108,9 @@ from airflow.contrib.hooks.wasb_hook import WasbHook
 from airflow.contrib.operators.file_to_gcs import FileToGoogleCloudStorageOperator
 from airflow.contrib.operators.gcs_to_bq import GoogleCloudStorageToBigQueryOperator
 from airflow.providers.google.cloud.transfers.local_to_gcs import LocalFilesystemToGCSOperator
+from airflow.contrib.operators.bigquery_operator import BigQueryOperator
 from airflow.contrib.operators import gcs_to_bq
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python_operator import PythonOperator---
 from airflow.operators.email_operator import EmailOperator
 from airflow.contrib.hooks.gcs_hook import GoogleCloudStorageHook
 from airflow.utils.dates import days_ago
@@ -115,6 +132,10 @@ blob1 = bucket.blob(sales_csv)
 blob1.download_to_filename("sales.csv")
 
 # Airflow 
+# to check default values
+airflow info
+# log information
+airflow config list
 # Backfill Command 
 airflow backfill FAILURE_PREDICTION_MODEL_DAG_1 -m -s 2022-02-07 -e 2022-06-01"
 # Trigger Command 
@@ -122,7 +143,9 @@ airflow trigger_dag DMS_SALES_DATA_INGESTION_PIPELINE
 
 uselegacy = false
 
-# Check for a file in azure blob
+
+
+# Check for a file in azure blobpsql -h 34.68.215.72 -p 6000 -d postgres -U postgres
 LOCAL_FILE = f'dms-{today}.csv'
 AZURE_BLOB = f'poc-data/DMS/Delta-Data/dms-{today}.csv'
 AZURE_CONTAINER = "175-warranty-analytics"
@@ -227,22 +250,100 @@ rm rm /usr/local/airflow/dags/*.xls || echo "hello
 }
 
 # PSQL POSTGRES
-CREATE DATABASE naveensdb
-\c naveendb
-sudo -u postgres psql 
-psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
-psql -h 34.68.215.72 -p 5432 -U superset superset
-CREATE DATABASE superset;
-CREATE USER superset WITH PASSWORD 'superset';
-GRANT ALL PRIVILEGES ON DATABASE "superset" to superset;
-psql -h 34.68.215.72 -p 6000 -d postgres -U postgres -W
-psql -h 34.68.215.72 -U superset -p 5432 -d superset < /home/root0002/Downloads/superset_bckup.sql
+        CREATE DATABASE naveensdb
+        \c naveendb
+        sudo -u postgres psql 
+        psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
+        psql -h 34.68.215.72 -p 5432 -U superset superset
+        CREATE DATABASE superset;
+        CREATE USER superset WITH PASSWORD 'superset';
+        GRANT ALL PRIVILEGES ON DATABASE "superset" to superset;
+        #  to point schema in airflow
+        GRANT ALL ON SCHEMA public TO airflow;
+        psql -h 34.68.215.72 -p 6000 -d postgres -U postgres -W
+        psql -h 34.68.215.72 -U superset -p 5432 -d superset < /home/root0002/Downloads/superset_bckup.sql
+        # COPY
+        psql -h 34.68.215.72 -U superset -d superset -c "\copy re_up FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
 
-# backup file command in sql
-docker exec -u airflow 741b11dfd3e9 pg_dump -Fc airflow > db.sql
+        # backup file command in sql
+        docker exec -u airflow 741b11dfd3e9 pg_dump -Fc airflow > db.sql
+        # For Postgres
+        pg_dump -U tecmint -h 10.10.20.10 -p 5432 tecmintdb > tecmintdb.sql
+        # medium article for backup from any datasource
+        https://medium.com/yavar/postgresql-using-copy-pg-dump-and-restore-b925f04c324d
+                                                                                                                
 
-# postgres conn url
-SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
+        # postgres conn url
+        SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
+
+
+        # COPY RIGHT IN THE TERMINAL
+        psql -h alkem.postgres.database.azure.com -U alkem@alkem -d postgres -c "\copy upvpp FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
+        COPY upvpp_v1 FROM ‘/home/root0002/Downloads/upvpp.csv’ DELIMETER ‘,’ CSV HEADER;
+
+        # ACCESS ANY DATABASE
+
+        psql "postgresql://alkem@alkem:analytics@2022@alkem.postgres.database.azure.com:5432/postgres"
+
+        # SET TO SPECIFIC SCHEMA IN A DB
+        SET search_path TO public;
+
+        # Create Table in psql
+        CREATE TABLE re_up_1 (
+        PartDescription VARCHAR ( 255 ),
+        BreakPoint VARCHAR ( 255 ),
+        JobCard VARCHAR ( 255 )
+        )
+
+        CREATE TABLE re_eo_2 (
+        MfgMonthNameYear VARCHAR ( 255 ),
+        MfgMonthYear VARCHAR ( 255 ),
+        DMart VARCHAR ( 255 ),
+        JobCard VARCHAR ( 255 ),
+        vehicleChassisNumber VARCHAR ( 255 ),
+        FirstYearBucket VARCHAR ( 255 )
+        );
+# airflow postgres connection id
+postgresql+psycopg2://airflow:airflow@34.68.215.72/airflow
+
+# COPY FILES FROM KUBERNETES POD TO LOCAL SYSTEM
+kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
+
+
+# Azure data Downlad command 
+az storage blob download \
+    --account-name redatalake \
+    --container-name 175-warranty-analytics \
+    --name poc-data/DMS/Dec_2021_DMS_Jobcard_data.csv \
+    --file ~/DMS/Dec_2021_DMS_Jobcard_data.csv \
+    --account-key AnWrOm+WVdGEP3POg76d5eIoNaW676NCSiBsDdcmYw3R7Bz5+WkGNL63VQx5Zg4acw2qf4aEkzOfysYdkaFtxg== \
+    --auth-mode key
+
+# Merge CSV's
+cat dms-cid-2022-08-05.csv > dms-cid-test.csv
+sed '1d' dms-cid-2022-08-06.csv >> dms-cid-test.csv
+
+#  to list all ports in use
+sudo lsof -i -P -n | grep LISTEN
+
+#  COPY command from local to kubermnetes  pod
+kubectl cp /path/to/your_folder name-of-your-pod:/path/to/destination_folder
 
 
 
+CREATE SCHEMA public;
+# BigQuery command to revert back to yesterday's table
+CREATE OR REPLACE TABLE dataset.table_restored
+AS 
+SELECT *
+FROM dataset.table
+FOR SYSTEM TIME AS OF 
+  TIMESTAMP_ADD(CURRENT_TIMESTAMP(), INTERVAL -1 DAY)   
+
+#  Using bq command tool
+bq load ds.new_tbl ./info.csv ./info_schema.json
+bq load ds.new_tbl gs://mybucket/info.csv ./info_schema.json
+bq load ds.small gs://mybucket/small.csv name:integer,value:string
+bq load ds.small gs://mybucket/small.csv field1,field2,field3
+
+ls -la   - to list all users

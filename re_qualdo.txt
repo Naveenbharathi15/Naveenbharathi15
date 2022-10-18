@@ -1,0 +1,66 @@
+01. RE - Data problems.
+-- Redundant data in raw files
+
+02. Tech stack used in RE project and solving.
+--  Docker
+    Kubernetes
+    Airflow
+    Ansible
+    Postgres
+    GCS 
+    Container Registry
+    BigQuery
+    Azure 
+    Qualdo
+    Piperr Reports
+    
+
+
+03. From where the data is comming from?
+-- Azure to GCS , GCS to BQ, Piperr Reports
+
+04. How Qualdo is helping RE to solve the problem?
+-- Data Redundancy, Data quality alerts, Data Quality Metrics, pattern change in data
+
+05. Types of data ? => Customer data?
+		       Sales data?
+		       whatever data?
+-- dms data 
+    1. JobCard / Service data
+    2. Sales data
+    3. Call centre data
+-- SAP
+    1. Concession
+    2. Vehicle Production 
+-- PPAP
+    1. problem
+-- RSA
+-- SOCIAL MEDIA
+
+Service Data 
+    Sales Data
+    Production Vehicle Manufacturing Data
+    Call centre data
+    Social media data
+    <!-- RSA Data
+    PPAP Data
+    SAP Concession Data -->
+		      
+06. Tool Used for data vizualization?
+-- Piperr Reports
+
+07. Actual Requirement by RE?
+	ML?
+	DL?
+	NLP?
+	ML models.
+
+08. From Beginning to Ending
+09. Some Screenshoots of RE project?
+10. what are the problems RE facing?
+-- Repeated corrections from RE even after finalising Piperr reports visual dbs
+
+11. For example if RE has some data drift. we need to show that we are helping them identifing the data drift in qualdo.
+we have prediction algorithms, which will reflect the forecast of next three months, where we can analyse variation in data behaviour 
+
+12. If there is a usecase on fillrate we have to explain usecase.

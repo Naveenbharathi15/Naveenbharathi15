@@ -291,10 +291,100 @@ SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
 #    - import_tasks: ./re-ansible-scripts/prod-login.yaml
 # import tasks are sub files
 
-
-etl
-
-
-git push https://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@github.com/Naveenbharathi15/Naveenbharathi15.git
+TO REMIND on 6th JULY VERIFY ALL TABLE NAMES 
+IN WHERE CONDITION HEAVY FILTER SHOULD COME FIRST
 
 
+Window function range rows
+range function
+eo first year trend reference 
+
+delete condition dag ff_maturedpart pareto
+
+line chart legend (change format .2f)
+pareto limit 7
+
+
+July 14
+1. jobcard prediction part GROUP
+2. overall model filter for job card prediction
+3. waranty prediction part GROUP
+4. pareto cost % qty .2 decimals
+5. customer x axis complaints y 3 sources
+6. x axis name 45 side change
+7. raw data unplanned and customer
+
+card replication in ff and eo prod
+
+
+# bar with line unplanned part wise pareto
+(line generic charts legends spell error, point mis match x axis)
+
+wifi act12345
+
+
+
+1. join eo and wc with year_maturity
+2. if you make any change deploy in production for right delta data
+3. deployment
+
+SELECT 
+DAG postgres dag
+21/07/2022 deployment must postgres dag
+portforward
+gcs delete operator airflow 
+
+
+
+airflow users create \
+    --username naveen \
+    --firstname apache \
+    --lastname airflow \
+    --role Admin \
+    --email naveen@saturam.com
+
+
+
+
+bq load ds.new_tbl ./info.csv ./info_schema.json
+bq load ds.new_tbl gs://mybucket/info.csv ./info_schema.json
+bq load ds.small gs://mybucket/small.csv name:integer,value:string
+bq load ds.small gs://mybucket/small.csv field1,field2,field3
+
+# important pandas functions
+https://towardsdatascience.com/20-of-pandas-functions-that-data-scientists-use-80-of-the-time-a4ff1b694707
+axis = 1 stacks columns together.
+axis = 0 stacks rows together, provided column header match.
+
+
+
+# 
+Correlated Subqueries
+A correlated subquery is one way of reading every row in a table and comparing values in each row against related data. It is used whenever a subquery must return a different result or set of results for each candidate row considered by the main query.
+
+Example: Write a query that finds the first name, salary, department, and average salary by department.
+
+SELECT first_name,salary,department,round((SELECT AVG(salary) 
+    FROM employees e2
+    WHERE e1.department = e2.department
+    GROUP BY department )) as avg_salary_by_department
+FROM employees e1 
+WHERE salary > (SELECT AVG(salary) 
+    FROM employees e2
+    WHERE e1.department = e2.department
+    GROUP BY department )
+ORDER BY salary
+result from data sample where corelated subqueries were used by data scientistsusing SQL
+
+
+# DB Connection Python Script
+conn = psycopg2.connect(
+    host="35.244.58.244",
+    database="supersetnew",
+    user="superset",
+    password="superset")
+cur = conn.cursor()
+cur.execute(f"""
+INSERT INTO ab_user (first_name,last_name,username,password,active,email)
+VALUES ('bipin', 'rawat', 'bipraw', 'abcd1234', true, 'dummy@dummy.com'
+""")
