@@ -35,6 +35,12 @@ sudo chmod +777 /var/run/docker.sock
 # docker run in specific port 
 docker run -p {target_port}:{container_port} {image_name}
 
+# accessing container from localhost
+https://forums.docker.com/t/using-localhost-for-to-access-running-container/3148
+
+# getting ip of a container
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-ID>
+
 # deleting port
 sudo lsof -i:{nameofport}
 sudo kill {pid}
@@ -90,8 +96,7 @@ head -100 filename.csv > cat.csv
         'Price': [835,112,267,209],
         'Sector':["Technology","Health Technology","Technology","Aircraft"]})
     # 2.
-    df1 = df[df['PartNumber']== j & (df['MfgDate']>=mfg_date) & 
-    (df['MfgDate']<tpi_bool_value)]
+    df1 = df[df['PartNumber']== j & docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container-ID>
 
     # 3. to filter through list
     df = df[df['ModelID'].isin(['VDLS46BB', '18t26UCSGmQf4AU5EdMXJw]).dt.date
@@ -250,61 +255,93 @@ rm rm /usr/local/airflow/dags/*.xls || echo "hello
 }
 
 # PSQL POSTGRES
-        CREATE DATABASE naveensdb
-        \c naveendb
-        sudo -u postgres psql 
-        psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
-        psql -h 34.68.215.72 -p 5432 -U superset superset
-        CREATE DATABASE superset;
-        CREATE USER superset WITH PASSWORD 'superset';
-        GRANT ALL PRIVILEGES ON DATABASE "superset" to superset;
-        #  to point schema in airflow
-        GRANT ALL ON SCHEMA public TO airflow;
-        psql -h 34.68.215.72 -p 6000 -d postgres -U postgres -W
-        psql -h 34.68.215.72 -U superset -p 5432 -d superset < /home/root0002/Downloads/superset_bckup.sql
-        # COPY
-        psql -h 34.68.215.72 -U superset -d superset -c "\copy re_up FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
+    https://medium.com/coding-blocks/creating-user-database-and-adding-access-on-postgresql-8bfcd2f4a91e
+    CREATE DATABASE naveensdb
+    \c naveendb
+    sudo -u postgres psql 
+    psql -h <REMOTE HOST> -p <REMOTE PORT> -U <DB_USER> <DB_NAME>
+    psql -h 34.68.215.72 -p 5432 -U superset superset
+    CREATE DATABASE superset;
+    CREATE USER superset WITH PASSWORD 'superset';
+    GRANT ALL PRIVILEGES ON DATABASE "superset" to superset;
+    #  to point schema in airflow
+    GRANT ALL ON SCHEMA public TO airflow;
+    psql -h 34.68.215.72 -p 6000 -d postgres -U postgres -W
+    psql -h 34.68.215.72 -U superset -p 5432 -d superset < /home/root0002/Downloads/superset_bckup.sql
+    # COPY
+    psql -h 34.68.215.72 -U superset -d superset -c "\copy re_up FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
 
-        # backup file command in sql
-        docker exec -u airflow 741b11dfd3e9 pg_dump -Fc airflow > db.sql
-        # For Postgres
-        pg_dump -U tecmint -h 10.10.20.10 -p 5432 tecmintdb > tecmintdb.sql
-        # medium article for backup from any datasource
-        https://medium.com/yavar/postgresql-using-copy-pg-dump-and-restore-b925f04c324d
-                                                                                                                
+    # backup file command in sql
+    docker exec -u airflow 741b11dfd3e9 pg_dump -Fc airflow > db.sql
+    # For Postgres
+    pg_dump -U tecmint -h 10.10.20.10 -p 5432 tecmintdb > tecmintdb.sql
+    # medium article for backup from any datasource
+    https://medium.com/yavar/postgresql-using-copy-pg-dump-and-restore-b925f04c324d
+    # backup fb in swpcific format
+    pg_dump -Fc -U postgres -h 35.238.177.160 -p 5432 -d airflow-v2 > airflow-v2.db
+    # migration from one db to other
+    pg_dump -C -h localhost -U localuser dbname | psql -h remotehost -U remoteuser dbname
 
-        # postgres conn url
-        SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
+
+    # postgres conn url
+    SQLALCHEMY_DATABASE_URI = 'postgresql://superset:superset@34.68.215.72/superset'
 
 
-        # COPY RIGHT IN THE TERMINAL
-        psql -h alkem.postgres.database.azure.com -U alkem@alkem -d postgres -c "\copy upvpp FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
-        COPY upvpp_v1 FROM ‘/home/root0002/Downloads/upvpp.csv’ DELIMETER ‘,’ CSV HEADER;
+    # COPY RIGHT IN THE TERMINAL
+    psql -h alkem.postgres.database.azure.com -U alkem@alkem -d postgres -c "\copy upvpp FROM '/home/root0002/Downloads/upvpp.csv' with (format csv,header true, delimiter ',');"
+    COPY upvpp_v1 FROM ‘/home/root0002/Downloads/upvpp.csv’ DELIMETER ‘,’ CSV HEADER;
 
-        # ACCESS ANY DATABASE
+    # ACCESS ANY DATABASE
 
-        psql "postgresql://alkem@alkem:analytics@2022@alkem.postgres.database.azure.com:5432/postgres"
+    psql "postgresql://alkem@alkem:analytics@2022@alkem.postgres.database.azure.com:5432/postgres"
 
-        # SET TO SPECIFIC SCHEMA IN A DB
-        SET search_path TO public;
+    # SET TO SPECIFIC SCHEMA IN A DB
+    SET search_path TO public;
 
-        # Create Table in psql
-        CREATE TABLE re_up_1 (
-        PartDescription VARCHAR ( 255 ),
-        BreakPoint VARCHAR ( 255 ),
-        JobCard VARCHAR ( 255 )
-        )
+    # Create Table in psql
+    CREATE TABLE re_up_1 (
+    PartDescription VARCHAR ( 255 ),
+    BreakPoint VARCHAR ( 255 ),
+    JobCard VARCHAR ( 255 )
+    )
 
-        CREATE TABLE re_eo_2 (
-        MfgMonthNameYear VARCHAR ( 255 ),
-        MfgMonthYear VARCHAR ( 255 ),
-        DMart VARCHAR ( 255 ),
-        JobCard VARCHAR ( 255 ),
-        vehicleChassisNumber VARCHAR ( 255 ),
-        FirstYearBucket VARCHAR ( 255 )
-        );
-# airflow postgres connection id
-postgresql+psycopg2://airflow:airflow@34.68.215.72/airflow
+    CREATE TABLE re_eo_2 (
+    MfgMonthNameYear VARCHAR ( 255 ),
+    MfgMonthYear VARCHAR ( 255 ),
+    DMart VARCHAR ( 255 ),
+    JobCard VARCHAR ( 255 ),
+    vehicleChassisNumber VARCHAR ( 255 ),
+    FirstYearBucket VARCHAR ( 255 )
+    );
+
+    # psql copy comamnd to skip header
+    \copy nameage from '/home/user/re/azure_to_postgres/name_age.csv' delimiter ',' CSV HEADER ;
+
+    # Azure Postgres Connection and backup
+        # To connect to Azure database
+            change the appropriate parameters
+            psql --host=mydemoserver.postgres.database.azure.com --port=5432 --username=myadmin@mydemoserver --dbname=postgres
+        # To create db and user
+            CREATE DATABASE piperrdb;
+            # Role --> superuser
+            CREATE ROLE piperrdb LOGIN SUPERUSER PASSWORD 'piperrdb';
+            GRANT ALL PRIVILEGES ON DATABASE piperrdb TO piperrdb;
+        # To restore to that database
+	        psql --file=testdb.sql --host=mydemoserver.database.windows.net --port=5432 --username=piperrdb@mydemoserver --dbname=piperrdb
+	        psql -h 35.202.189.230 -p 5432 -d superset -U superset -W -f superset.sql
+
+    # airflow postgres connection id
+    postgresql+psycopg2://airflow:airflow@34.68.215.72/airflow
+
+    # COPY TABLE FROM ONE SCHEMA TO ANOTHER
+        CREATE SCHEMA login_history;
+        SHOW search_path;
+        SET search_path to login_history;
+        create table login_history.user_historic (like public.user_historic including all);
+        insert into login_history.user_historic select * from public.user_historic;
+
+    # COPY A POSTGRES TABLE TO CSV
+    \COPY user_historic TO 'user_historic_v2.csv' WITH (FORMAT CSV, HEADER);
 
 # COPY FILES FROM KUBERNETES POD TO LOCAL SYSTEM
 kubectl cp /tmp/foo_dir <some-pod>:/tmp/bar_dir
@@ -346,4 +383,32 @@ bq load ds.new_tbl gs://mybucket/info.csv ./info_schema.json
 bq load ds.small gs://mybucket/small.csv name:integer,value:string
 bq load ds.small gs://mybucket/small.csv field1,field2,field3
 
-ls -la   - to list all users
+# list all users
+ls -la   
+
+# change password incase we forgot password
+sudo passwd {username}
+https://www.digitalocean.com/community/tutorials/how-to-create-a-new-sudo-enabled-user-on-ubuntu-18-04-quickstart
+
+# to run two commands
+(airflow scheduler &) && airflow webserver
+
+# to give root access to 
+sudo groupadd user
+sudo usermod -aG docker user	
+sudo usermod -aG sudo <username>	
+# now you can run docker commands without sudo
+
+
+# install pythpn command
+sudo apt install python3.8 -y
+
+# install specific python version in venv
+sudo apt update
+sudo apt install python3.8-venv -y
+python3.8 -m venv {name}
+
+# to find a file in command line
+find . -name cred.json
+
+
