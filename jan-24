@@ -1,0 +1,27 @@
+-- Bad Data Analysis
+Considering conditions in where clause other than Business Logic
+
+Usecase: Relationship Tree
+	1. Gather 4 days dms job card data from Jan 21 - 24 to a single table bigquery dataset
+	2. Create new table "relationship-tree-data-analysis-table" by copyting the above table 
+	2. Create two columns "Usecase" with value "Relationship Tree" and "Comments"
+	3. Create a query which filters each condition other than business logic one by one and set value in comment section
+		Ex: if ModelType is "NA" then value in comments column will be "Model Type Cant be Identified"
+	4. Save the above changes to the "relationship-tree-data-analysis-table"
+	
+	
+-- Working on above task
+
+jan 21 - 125716
+jan 22 - 263363
+jan 23 - 331267
+jan 24 - 468227
+
+
+Modeltype in "NA" 			- 314
+PrimaryPart is null 			- 466653
+length(Jobcard) != 16 			- 0
+length(VehicleChassisNumber) != 17 	- 262 
+PartNumber IS null			- 32295
+PartDescription IS null		- 32295
+

@@ -1,0 +1,10 @@
+-- Installing gcloud and kubectl
+	https://cloud.google.com/sdk/docs/install#deb-additional
+	kubectl plugin to login gcloud with credentials
+	https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
+	
+-- LetsEncrypt	
+	https://letsencrypt.org/how-it-works/
+	
+-- SSL On Kubernetes Cluster
+	https://medium.com/avmconsulting-blog/how-to-secure-applications-on-kubernetes-ssl-tls-certificates-8f7f5751d788

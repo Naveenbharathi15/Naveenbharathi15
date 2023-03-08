@@ -1,0 +1,67 @@
+CREATE TABLE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree` AS 
+SELECT *
+FROM `re-warranty-analytics-prod.re_wa_prod.jobcard_data_jan_21-24`
+WHERE ItemType like '%Part%' and PrimaryConsequential like '%Consequential%' and PartAction is null
+
+
+SELECT DISTINCT data_quality FROM `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree` 
+ALTER TABLE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree` ADD COLUMN comments STRING
+ALTER TABLE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree` ADD COLUMN data_quality STRING
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET data_quality = (CASE 
+                      WHEN comments is NULL THEN "good data"
+                      ELSE "bad data"
+                END)
+WHERE 1 = 1
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "ModelType is Null"
+                      ELSE CONCAT(comments, ",ModelType is Null")
+                END)
+WHERE ModelType in ('NA')
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "Plant is Null"
+                      ELSE CONCAT(comments, ",Plant is Null")
+                  END)
+WHERE Plant in ('NA')
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "PrimaryPart is Null"
+                      ELSE CONCAT(comments, ",PrimaryPart is Null")
+                  END)
+WHERE PrimaryPart IS NULL
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "JobCard length not 16"
+                      ELSE CONCAT(comments, ",JobCard length not 16")
+                  END)
+WHERE length(JobCard) != 16
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "VehicleChassisNumber length not 17"
+                      ELSE CONCAT(comments, ",VehicleChassisNumber length not 17")
+                  END)
+WHERE length(VehicleChassisNumber) != 17
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "PartNumber is Null"
+                      ELSE CONCAT(comments, ",PartNumber is Null")
+                  END)
+WHERE PartNumber IS NULL
+
+UPDATE `re-warranty-analytics-prod.re_wa_prod.dq_relationship_tree`
+SET comments = (CASE
+                      WHEN comments IS NULL THEN "PartDescription is Null"
+                      ELSE CONCAT(comments, ",PartDescription is Null")
+                  END)
+WHERE PartDescription IS NULL
+
+

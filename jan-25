@@ -1,0 +1,29 @@
+ Jira Ticketing Dashboard
+	  639  sudo systemctl restart nginx
+	  640  sudo systemctl stop nginx
+	  641  sudo systemctl daemon-reload
+	  642  sudo systemctl start nginx
+	  643  sudo nano nginx.conf 
+	  644  sudo systemctl start nginx
+	  645  sudo systemctl restart nginx
+	  646  sudo systemctl stop jira-app
+	  647  sudo systemctl daemon-reload
+	  649  sudo systemctl start jira-app
+	  
+	  Need to reconfigure nginx with domain name
+	  
+Debugging ssl expiration tracking in jira
+
+
+
+doubts to be asked with Rakesh
+
+1. scheduler-api.yaml - How they give variables in yaml files
+
+2. in piperr reports also how templating is done
+
+
+
+Explore the features of Airflow 2.5
+Astraadq - Airflow Support -by Astronomer
+
